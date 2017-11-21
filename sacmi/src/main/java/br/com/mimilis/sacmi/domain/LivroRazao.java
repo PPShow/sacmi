@@ -3,13 +3,31 @@ package br.com.mimilis.sacmi.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_FIN_LIVRO_RAZAO")
 public class LivroRazao implements Serializable {
 	
 	private static final long serialVersionUID = -8300170348501322709L;
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
 	private Long id;
+	
+	@Column(name="COD_MES")
 	private Integer mes;
+	
+	@Column(name="COD_ANO")
 	private Integer ano;
+	
+	@Column(name="BALANCO_ATUAL")
 	private BigDecimal balanco;
 	
 	//--- CONSTRUTORES
