@@ -2,7 +2,6 @@ package br.com.mimilis.sacmi.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,8 +27,8 @@ public class LivroRazao implements Serializable {
 	@Column(name="COD_ANO")
 	private Integer ano;
 	
-	@Column(name="VALOR_BALANCO")
-	private BigDecimal valor;
+	@Column(name="BALANCO_ATUAL")
+	private BigDecimal balanco;
 	
 	//--- CONSTRUTORES
 	public LivroRazao() { }
@@ -39,15 +38,15 @@ public class LivroRazao implements Serializable {
 		this.id = id;
 		this.mes = mes;
 		this.ano = ano;
-		valor = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+		balanco = BigDecimal.ZERO;
 	}
 	
-	public LivroRazao(Long id, Integer mes, Integer ano, BigDecimal valor) {
+	public LivroRazao(Long id, Integer mes, Integer ano, BigDecimal balanco) {
 		super();
 		this.id = id;
 		this.mes = mes;
 		this.ano = ano;
-		this.valor = valor;
+		this.balanco = balanco;
 	}
 	
 	//--- HASH-CODE & EQUALS
@@ -101,11 +100,11 @@ public class LivroRazao implements Serializable {
 		this.ano = ano;
 	}
 	
-	public BigDecimal getValor() {
-		return valor;
+	public BigDecimal getBalanco() {
+		return balanco;
 	}
 	
-	public void setValor(BigDecimal balanco) {
-		this.valor = balanco;
+	public void setBalanco(BigDecimal balanco) {
+		this.balanco = balanco;
 	}
 }

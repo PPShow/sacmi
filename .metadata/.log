@@ -1166,3 +1166,9 @@ org.eclipse.core.runtime.OperationCanceledException
 
 !ENTRY org.eclipse.jdt.ui 2 0 2017-11-21 17:55:57.763
 !MESSAGE The 'org.eclipse.recommenders.completion.rcp.javaCompletionProposalComputer.intelligent' proposal computer from the 'org.eclipse.recommenders.completion.rcp' plug-in did not complete normally. The extension took too long to return from the 'computeCompletionProposals()' operation.
+
+!ENTRY org.eclipse.jface.text 2 0 2017-11-21 18:17:34.268
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.number'
+
+!ENTRY org.eclipse.jface.text 2 0 2017-11-21 18:17:34.274
+!MESSAGE Duplicate template id: 'org.eclipse.wst.xslt.templates.xpath.round'
