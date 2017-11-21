@@ -1,0 +1,5 @@
+package br.com.mimilis.sacmi.domain;
+
+public class LivroRazao {
+
+}
