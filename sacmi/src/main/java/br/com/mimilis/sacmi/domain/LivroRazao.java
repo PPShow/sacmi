@@ -3,12 +3,17 @@ package br.com.mimilis.sacmi.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -31,6 +36,15 @@ public class LivroRazao implements Serializable {
 	@Column(name="VALOR_BALANCO")
 	private BigDecimal valor;
 	
+	@Column(name="VALOR_BALANCO_ANTERIOR")
+	private BigDecimal valorAnterior;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="livroRazao", fetch=FetchType.LAZY, orphanRemoval=false)
+	private List<Receita> receitas = new ArrayList<Receita>();
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="livroRazao", fetch=FetchType.LAZY, orphanRemoval=false)
+	private List<Despesa> despesas = new ArrayList<Despesa>();
+	
 	//--- CONSTRUTORES
 	public LivroRazao() { }
 	
@@ -50,6 +64,15 @@ public class LivroRazao implements Serializable {
 		this.valor = valor;
 	}
 	
+	public LivroRazao(Long id, Integer mes, Integer ano, BigDecimal valor, BigDecimal valorAnterior) {
+		super();
+		this.id = id;
+		this.mes = mes;
+		this.ano = ano;
+		this.valor = valor;
+		this.valorAnterior = valorAnterior;
+	}
+
 	//--- HASH-CODE & EQUALS
 	@Override
 	public int hashCode() {
@@ -107,5 +130,29 @@ public class LivroRazao implements Serializable {
 	
 	public void setValor(BigDecimal balanco) {
 		this.valor = balanco;
+	}
+
+	public List<Receita> getReceitas() {
+		return receitas;
+	}
+
+	public void setReceitas(List<Receita> receitas) {
+		this.receitas = receitas;
+	}
+
+	public List<Despesa> getDespesas() {
+		return despesas;
+	}
+
+	public void setDespesas(List<Despesa> despesas) {
+		this.despesas = despesas;
+	}
+
+	public BigDecimal getValorAnterior() {
+		return valorAnterior;
+	}
+
+	public void setValorAnterior(BigDecimal valorAnterior) {
+		this.valorAnterior = valorAnterior;
 	}
 }

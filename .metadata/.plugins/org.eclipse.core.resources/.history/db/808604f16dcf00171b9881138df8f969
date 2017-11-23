@@ -1,0 +1,12 @@
+package br.com.mimilis.sacmi.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_FIN_RECEITA")
+public class Receita extends MovimentoFinanceiro implements Serializable {
+
+}

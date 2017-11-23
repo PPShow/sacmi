@@ -1,0 +1,31 @@
+package br.com.mimilis.sacmi;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import br.com.mimilis.sacmi.repositories.DespesaRepository;
+import br.com.mimilis.sacmi.repositories.LivroRazaoRepository;
+import br.com.mimilis.sacmi.resources.LivroRazaoResource;
+
+@SpringBootApplication
+public class SacmiApplication implements CommandLineRunner{
+
+	public static void main(String[] args) {
+		SpringApplication.run(SacmiApplication.class, args);
+	}
+	
+	@Autowired
+	private LivroRazaoRepository lrDao;
+	
+	@Autowired
+	private DespesaRepository desDao;
+
+	@Override
+	public void run(String... arg0) throws Exception {
+		
+		
+		
+	}
+}

@@ -1,0 +1,15 @@
+package br.com.mimilis.sacmi.domain;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+
+public class Receita {
+	
+	private Long id;
+	
+	private Calendar dataCadastro;
+	private Calendar dataEntrada;
+	
+	private BigDecimal valor;
+	
+}
