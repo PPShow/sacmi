@@ -1,0 +1,17 @@
+package br.com.mimilis.sacmi.fin.exception;
+
+public class ExcelImportException extends RuntimeException {
+	
+	private static final long serialVersionUID = 377008370995345570L;
+	
+	public static final String ERR_MES_VAZIO = "Nenhum mês informado";
+	public static final String ERR_ANO_VAZIO = "Nenhum ano informado";
+
+	public ExcelImportException(String msg) {
+		super(msg);
+	}
+	
+	public ExcelImportException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
+}

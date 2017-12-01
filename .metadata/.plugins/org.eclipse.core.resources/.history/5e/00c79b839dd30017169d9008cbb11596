@@ -1,0 +1,287 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name="TB_FIN_RECEITA_ITEM")
+public class ReceitaItem implements Serializable {
+	
+	private static final long serialVersionUID = -3336268795443369100L;
+	
+	//CATEGORIA
+	public static final Character CAT_DINHEIRO = 'D';
+	public static final Character CAT_CARTAO_DEBITO = 'B';
+	public static final Character CAT_CARTAO_CREDITO = 'C';
+	public static final Character CAT_VALE_REFEICAO = 'R';
+	public static final Character CAT_VALE_ALIMENTACAO = 'A';
+	
+	//FATOR DE DESCONTO - VENDAS
+	public static final BigDecimal DESC_DINHEIRO = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+	public static final BigDecimal DESC_DEBITO = new BigDecimal(2.39).setScale(2, RoundingMode.HALF_EVEN);
+	public static final BigDecimal DESC_CREDITO = new BigDecimal(3.19).setScale(2, RoundingMode.HALF_EVEN);
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name="ID_RECEITA", nullable=false)
+	private Receita receita;
+	
+	@Column(name="DESCRICAO")
+	private String descricao;
+	
+	@Column(name="CATEGORIA", length=1)
+	private Character categoria;
+	
+	/**
+	 * Data prevista da entrada dos recursos - PODE SER A MESMA DA CRIACAO
+	 */
+	@Column(name="DATA_PREVISTA_ENTRADA", nullable=true)
+	@Temporal(TemporalType.DATE)
+	private Calendar dataPrevistaEntrada;
+	
+	/**
+	 * Data real da entrada dos recursos - PODE SER A MESMA DA CRIACAO
+	 */
+	@Column(name="DATA_ENTRADA", nullable=true)
+	@Temporal(TemporalType.DATE)
+	private Calendar dataEntrada;
+	
+	@Column(name="VALOR_RECEBIDO", precision=6, scale=2)
+	private BigDecimal valorRecebido;
+	
+	@Column(name="VALOR_DESCONTO", precision=2, scale=2)
+	private BigDecimal valorDesconto;
+	
+	@Column(name="VALOR_LIQUIDO", precision=6, scale=2)
+	private BigDecimal valorLiquido;
+	
+	@Column(name="FLAG_RECEBIMENTO_PENDENTE")
+	private Boolean flagPendente = false;
+	
+	@Column(name="OBSERVACOES")
+	private String observacoes;
+	
+	//--- CONSTRUTORES
+	public ReceitaItem() { }
+
+	public ReceitaItem(Long id, Receita receita, Character categoria, BigDecimal valorRecebido) {
+		super();
+		this.id = id;
+		this.receita = receita;
+		this.categoria = categoria;
+		this.valorRecebido = valorRecebido;
+		
+		if(receita != null) {
+			this.dataPrevistaEntrada = receita.getDataCriacao();
+			this.dataEntrada = receita.getDataCriacao();
+		}
+	}
+	
+	public ReceitaItem(Long id, Receita receita, Character categoria, Double valorRecebido) {
+		super();
+		this.id = id;
+		this.receita = receita;
+		this.categoria = categoria;
+		this.valorRecebido = valorRecebido != null ? new BigDecimal(valorRecebido).setScale(2, RoundingMode.HALF_EVEN) : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+		
+		if(receita != null) {
+			this.dataPrevistaEntrada = receita.getDataCriacao();
+			this.dataEntrada = receita.getDataCriacao();
+		}
+	}
+
+	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, BigDecimal valorRecebido) {
+		super();
+		this.id = id;
+		this.receita = receita;
+		this.descricao = descricao;
+		this.categoria = categoria;
+		this.valorRecebido = valorRecebido;
+		
+		if(receita != null) {
+			this.dataPrevistaEntrada = receita.getDataCriacao();
+			this.dataEntrada = receita.getDataCriacao();
+		}
+	}
+
+	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+			Calendar dataEntrada, BigDecimal valorRecebido) {
+		super();
+		this.id = id;
+		this.receita = receita;
+		this.descricao = descricao;
+		this.categoria = categoria;
+		this.dataPrevistaEntrada = dataPrevistaEntrada;
+		this.dataEntrada = dataEntrada;
+		this.valorRecebido = valorRecebido;
+	}
+
+	public ReceitaItem(Long id, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+			Calendar dataEntrada, BigDecimal valorRecebido, BigDecimal valorDesconto, BigDecimal valorLiquido,
+			Boolean flagPendente, String observacoes) {
+		super();
+		this.id = id;
+		this.descricao = descricao;
+		this.categoria = categoria;
+		this.dataPrevistaEntrada = dataPrevistaEntrada;
+		this.dataEntrada = dataEntrada;
+		this.valorRecebido = valorRecebido;
+		this.valorDesconto = valorDesconto;
+		this.valorLiquido = valorLiquido;
+		this.flagPendente = flagPendente;
+		this.observacoes = observacoes;
+	}
+
+	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+			Calendar dataEntrada, BigDecimal valorRecebido, BigDecimal valorDesconto, BigDecimal valorLiquido,
+			Boolean flagPendente, String observacoes) {
+		super();
+		this.id = id;
+		this.receita = receita;
+		this.descricao = descricao;
+		this.categoria = categoria;
+		this.dataPrevistaEntrada = dataPrevistaEntrada;
+		this.dataEntrada = dataEntrada;
+		this.valorRecebido = valorRecebido;
+		this.valorDesconto = valorDesconto;
+		this.valorLiquido = valorLiquido;
+		this.flagPendente = flagPendente;
+		this.observacoes = observacoes;
+	}
+
+	//--- HASH CODE & EQUALS
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ReceitaItem other = (ReceitaItem) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	//--- GETTERS & SETTERS
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Receita getReceita() {
+		return receita;
+	}
+
+	public void setReceita(Receita receita) {
+		this.receita = receita;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public Character getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Character categoria) {
+		this.categoria = categoria;
+	}
+
+	public Calendar getDataPrevistaEntrada() {
+		return dataPrevistaEntrada;
+	}
+
+	public void setDataPrevistaEntrada(Calendar dataPrevistaEntrada) {
+		this.dataPrevistaEntrada = dataPrevistaEntrada;
+	}
+
+	public Calendar getDataEntrada() {
+		return dataEntrada;
+	}
+
+	public void setDataEntrada(Calendar dataEntrada) {
+		this.dataEntrada = dataEntrada;
+	}
+
+	public BigDecimal getValorRecebido() {
+		return valorRecebido;
+	}
+
+	public void setValorRecebido(BigDecimal valorRecebido) {
+		this.valorRecebido = valorRecebido;
+	}
+
+	public BigDecimal getValorDesconto() {
+		return valorDesconto;
+	}
+
+	public void setValorDesconto(BigDecimal valorDesconto) {
+		this.valorDesconto = valorDesconto;
+	}
+
+	public BigDecimal getValorLiquido() {
+		return valorLiquido;
+	}
+
+	public void setValorLiquido(BigDecimal valorLiquido) {
+		this.valorLiquido = valorLiquido;
+	}
+
+	public Boolean getFlagPendente() {
+		return flagPendente;
+	}
+
+	public void setFlagPendente(Boolean flagPendente) {
+		this.flagPendente = flagPendente;
+	}
+
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
+	}
+
+}

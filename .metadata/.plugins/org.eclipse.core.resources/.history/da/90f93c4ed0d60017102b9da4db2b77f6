@@ -1,0 +1,5 @@
+package br.com.mimilis.sacmi.geral.exceptions;
+
+public class ObjectNotFoundException {
+
+}

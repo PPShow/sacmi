@@ -1,0 +1,4 @@
+1512158537063	Rename field 'ERR_PATT_NOT_FOUND'
+1512158678417	Rename type 'ExcelImportException'
+1512158779199	Rename local variable 'jul'
+1512159318792	Rename type 'StandartError'

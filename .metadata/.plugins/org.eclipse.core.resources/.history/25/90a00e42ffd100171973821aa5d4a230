@@ -1,0 +1,35 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_FIN_DESPESA_ITEM")
+public class DespesaItem implements Serializable{
+	
+	
+	public static final Character CAT_COMPRA = 'C';
+	public static final Character CAT_CONTA = 'T';
+	public static final Character CAT_PESSOAL = 'P';
+	public static final Character CAT_PAGAMENTO_EQUIPE = 'E';
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@ManyToOne
+	@JoinColumn(name="ID_DESPESA")
+	private Despesa despesa;
+	
+	@Column(name="DESCRICAO")
+	private String descricao;
+}

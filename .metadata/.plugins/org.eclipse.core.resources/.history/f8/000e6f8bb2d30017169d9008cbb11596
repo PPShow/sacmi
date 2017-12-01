@@ -1,0 +1,81 @@
+package br.com.mimilis.sacmi.geral.ref;
+
+import java.util.Calendar;
+
+public enum MesRef {
+
+	 JAN (1,	Calendar.JANUARY,	"Janeiro",	"Jan")
+	,FEV (1,	Calendar.FEBRUARY,	"Fevereiro","Fev")
+	,MAR (1,	Calendar.MARCH,		"Março",	"Mar")
+	,ABR (1,	Calendar.APRIL,		"Abril",	"Abr")
+	,MAI (1,	Calendar.MAY,		"Maio",		"Mai")
+	,JUN (1,	Calendar.JUNE,		"Junho",	"Jun")
+	,JUL (1,	Calendar.JULY,		"Julho",	"Jul")
+	,AGO (1,	Calendar.AUGUST,	"Agosto",	"Ago")
+	,SET (1,	Calendar.SEPTEMBER,	"Setembro",	"Set")
+	,OUT (10,	Calendar.OCTOBER,	"Outubro",	"Out")
+	,NOV (11,	Calendar.NOVEMBER,	"Novembro",	"Nov")
+	,DEZ (12,	Calendar.DECEMBER,	"Dezembro",	"Dez")
+	;
+	
+	private Integer id;
+	private Integer calendarId;
+	private String nomeCompleto;
+	private String abrev;
+	
+	private MesRef(Integer id, Integer calendarId, String nomeCompleto, String abrev) {
+		this.id = id;
+		this.calendarId = calendarId;
+		this.nomeCompleto = nomeCompleto;
+		this.abrev = abrev;
+	}
+	
+	public MesRef matchAnyString(String value) {
+		if(value == null) {
+			return null;
+		}
+		
+		for(MesRef mr : MesRef.values()) {
+			if( mr.abrev.toUpperCase().equals(value.trim().toUpperCase())
+					|| mr.nomeCompleto.toUpperCase().equals(value.trim().toUpperCase()) 
+				) {
+				return mr;
+			}
+		}
+		
+		return null;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getCalendarId() {
+		return calendarId;
+	}
+
+	public void setCalendarId(Integer calendarId) {
+		this.calendarId = calendarId;
+	}
+
+	public String getNomeCompleto() {
+		return nomeCompleto;
+	}
+
+	public void setNomeCompleto(String nomeCompleto) {
+		this.nomeCompleto = nomeCompleto;
+	}
+
+	public String getAbrev() {
+		return abrev;
+	}
+
+	public void setAbrev(String abrev) {
+		this.abrev = abrev;
+	}
+	
+}

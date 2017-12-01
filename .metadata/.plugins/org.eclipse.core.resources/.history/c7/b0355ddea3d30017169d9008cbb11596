@@ -1,0 +1,15 @@
+package br.com.mimilis.sacmi.fin.tools;
+
+import org.apache.poi.ss.usermodel.Workbook;
+
+public class ExcelTools {
+	
+	private String filePath;
+	private String sheetName;
+	
+	private Workbook workbook;
+	
+	public ExcelTools(String filePath) {
+		this.filePath = filePath;
+	}
+}

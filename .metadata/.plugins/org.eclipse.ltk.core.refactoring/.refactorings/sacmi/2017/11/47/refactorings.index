@@ -3,3 +3,15 @@
 1511344806109	Rename type 'Receita'
 1511400223637	Copy compilation unit
 1511400234822	Copy compilation unit
+1511614554705	Copy package
+1511614581094	Delete elements
+1511614585900	Delete element
+1511614653671	Move compilation units
+1511614719557	Delete elements
+1511622085837	Delete element
+1511622097281	Delete element
+1511622239516	Delete element
+1511623603040	Rename local variable 'rota'
+1511624282011	Rename local variable 'nomeRota'
+1511624604064	Rename type 'MovimentoFinanceiroItem'
+1511626086898	Rename field 'dataVigencia'

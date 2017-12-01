@@ -1,0 +1,297 @@
+package br.com.mimilis.sacmi.fin.tools;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellReference;
+
+import br.com.mimilis.sacmi.fin.domain.Despesa;
+import br.com.mimilis.sacmi.fin.domain.DespesaItem;
+import br.com.mimilis.sacmi.fin.domain.LivroRazao;
+import br.com.mimilis.sacmi.fin.domain.MovimentoFinanceiro;
+import br.com.mimilis.sacmi.fin.domain.Receita;
+import br.com.mimilis.sacmi.fin.domain.ReceitaItem;
+import br.com.mimilis.sacmi.geral.ref.MesRef;
+
+public class ImportarExcel implements Serializable{
+	
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String filePath;
+	
+	public ImportarExcel(String filePath) {
+		this.filePath = filePath;
+	}
+	
+	public LivroRazao importarDataSet(Integer mes, Integer ano) throws Exception {
+		
+		if(mes == null || ano == null) {
+			throw new Exception("Nenhum mês ou ano informado");
+		}
+		
+		ExcelReaderTools ert = new ExcelReaderTools(filePath);
+		ert.openWorkbook();
+		
+		Sheet chosen = null;
+		MesRef mr = MesRef.matchValue(mes, false);
+		if(mr == null) {
+			throw new Exception("Mês informado é inválido");
+		}
+		
+		String sheetName;
+		for(Sheet sheet : ert.getWorkbook()) {
+			sheetName = sheet.getSheetName().toUpperCase();
+			if( (sheetName.contains(mr.abrev.toUpperCase()) || sheetName.contains(mr.nomeCompleto.toUpperCase())) && sheetName.contains(ano.toString()) ) {
+				chosen = sheet;
+				break;
+			}
+		}
+		
+		if(chosen == null) {
+			throw new Exception("Nenhuma planilha encontrada com os padrões de Mês/Ano passados");
+		}
+		
+		if(ano.intValue() == 2016) {
+			if(mes > 3) {
+				return importDataSet_Abr2016Abr2017(chosen, mes, ano);
+			}
+		}
+		
+		if(ano.intValue() == 2017) {
+			return importDataSet_NovaPlanilha(chosen, mes, ano);
+		}
+		
+		ert.closeWorkbook();
+		return null;
+	}
+	
+	//METODOS DE LEITURA ESPECIFICOS
+	protected LivroRazao importDataSet_NovaPlanilha(Sheet sheet, Integer mes, Integer ano) throws Exception {
+		
+		if(sheet != null && mes != null && ano != null) {
+			
+			String H_DESCRICAO = "Descrição";
+			String H_DATA = "Data";
+			String H_R_DINHEIRO = "Dinheiro";
+			String H_R_DEBITO = "Débito c/2,39% taxa";
+			String H_R_CREDITO = "Crédito à vista C/ 3,19% taxa";
+			String H_DESPESA = "Saída";
+			
+			String H_STOP = "TOTAL";
+			
+			int rowNumStart = -1;
+			int headDescricao = -1;
+			int headData = -1;
+			int headRecDinheiro = -1;
+			int headRecDebito = -1;
+			int headRecCredito = -1;
+			int headDespesa = -1;
+			
+			boolean isMapped = false;
+			
+			String content;
+			int colInd;
+			DataFormatter formatter = new DataFormatter();
+			
+			//MAPEAMENTO
+			for(Row row : sheet) {
+				
+				for(Cell cell : row) {
+					
+					content = formatter.formatCellValue(cell);
+					colInd = cell.getColumnIndex();
+					
+					if(matchHeaderContent(H_DESCRICAO, content)) {
+						headDescricao = colInd;
+					}
+					if(matchHeaderContent(H_DATA, content)) {
+						headData = colInd;
+					}
+					if(matchHeaderContent(H_R_DINHEIRO, content)) {
+						headRecDinheiro = colInd;
+					}
+					if(matchHeaderContent(H_R_DEBITO, content)) {
+						headRecDebito = colInd;
+					}
+					if(matchHeaderContent(H_R_CREDITO, content)) {
+						headRecCredito = colInd;
+					}
+					if(matchHeaderContent(H_DESPESA, content)) {
+						headDespesa = colInd;
+					}
+				}
+				
+				if(validateNonNegativeValues(headDescricao, headData, headRecDinheiro, headRecDebito, headRecCredito, headDespesa)) {
+					rowNumStart = row.getRowNum()+1;
+					isMapped = true;
+					break;
+				}
+			}
+			
+			if(!isMapped) {
+				throw new Exception("Valores de referência não encontrados");
+			}
+			
+			LivroRazao lr = new LivroRazao(null, mes, ano);
+			Map<Calendar, MovimentoFinanceiro> mapeamento = new HashMap<Calendar,MovimentoFinanceiro>();
+			Receita rec;
+			Despesa des;
+			
+			//LEITURA
+			Row row;
+			boolean isStop = false;
+			String descricao;
+			Calendar data;
+			String rawRec;
+			Double recDin;
+			Double recDeb;
+			Double recCre;
+			Double desp;
+			for(Integer rowNum = rowNumStart; rowNum <= sheet.getLastRowNum(); rowNum++) {
+				
+				descricao = null;
+				data = null;
+				recDin = null;
+				recDeb = null;
+				recCre = null;
+				desp = null;
+				row = sheet.getRow(rowNum);
+				
+				for(Cell cell : row) {
+					
+					colInd = cell.getColumnIndex();
+					//DESCRICAO
+					if(colInd == headDescricao) {
+						descricao = cell.getStringCellValue();
+						if(matchHeaderContent(descricao, H_STOP)) {
+							isStop = true;
+							break;
+						}
+					}
+					//DATA
+					else if(colInd == headData) {
+						data = Calendar.getInstance();
+						data.setTime(cell.getDateCellValue());
+					}
+					//RECEITA DINHEIRO/DEBITO
+					else if(colInd == headRecDinheiro) {
+						recDin = cell.getNumericCellValue();
+					}
+					//RECEITA DEBITO
+					else if(colInd == headRecDebito) {
+						if(cell.getNumericCellValue() > 0.0) {
+							recDeb = cell.getNumericCellValue();
+						}
+					}
+					//RECEITA CREDITO
+					else if(colInd == headRecCredito) {
+						recCre = cell.getNumericCellValue();
+					}
+					//DESPESA
+					else if(colInd == headDespesa) {
+						desp = cell.getNumericCellValue();
+					}
+				}
+				
+				if(isStop) {
+					break;
+				}
+				
+				if( validateAnyPositive(recDin, recDeb, recCre) ) {
+					rec = (Receita) mapeamento.get(data);
+					if(rec == null) {
+						rec = new Receita(null, descricao, data);
+					}
+					if(recDin != null && recDin > 0.0) {
+						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_DINHEIRO, recDin) );
+						rec.addValor(recDin);
+					}
+					if(recDeb != null && recDeb > 0.0) {
+						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_CARTAO_DEBITO, recDeb) );
+						rec.addValor(recDeb);
+					}
+					if(recCre != null && recCre > 0.0) {
+						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_CARTAO_CREDITO, recCre) );
+						rec.addValor(recCre);
+					}
+					mapeamento.put(data, rec);
+				}
+				
+				if(desp != null && desp > 0.0) {
+					des = (Despesa) mapeamento.get(data);
+					if(des == null) {
+						des = new Despesa(null,descricao,data);
+					}
+					des.getItens().add(new DespesaItem(null, des, DespesaItem.CAT_GERAL, desp));
+					mapeamento.put(data, des);
+				}
+			}
+			
+			//CRIACAO DO LIVRO RAZAO
+			MovimentoFinanceiro mov;
+			for(Calendar key : mapeamento.keySet()) {
+				mov = mapeamento.get(key);
+				if(mov.isReceita() ) {
+					lr.getReceitas().add((Receita) mov);
+					lr.addValor(mov.getValor());
+				}
+				else if(mov.isDespesa()) {
+					lr.getDespesas().add((Despesa) mov);
+					lr.subtrValor(mov.getValor());
+				}
+			}
+			
+			return lr;
+		}
+		
+		return null;
+	}
+	
+	protected LivroRazao importDataSet_Mai2017Jun2017(Sheet sheet, Integer mes, Integer ano) {
+		//TODO
+		return null;
+	}
+	
+	protected LivroRazao importDataSet_Abr2016Abr2017(Sheet sheet, Integer mes, Integer ano) {
+		//TODO
+		return null;
+	}
+	
+	//MATCHERS & VALIDATORS
+	private boolean matchHeaderContent(String header, String content) {
+		if( header != null && !header.isEmpty() && content != null && !content.isEmpty() ) {
+			return header.trim().toUpperCase().equals( content.trim().toUpperCase() );
+		}
+		return false;
+	}
+	
+	private boolean validateNonNegativeValues(Integer...values) {
+		if(values != null && values.length > 0) {
+			for(Integer value : values) {
+				if(value < 0) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean validateAnyPositive(Double ...values) {
+		if(values != null && values.length > 0) {
+			for(Double value : values) {
+				if(value != null && value > 0.0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+}

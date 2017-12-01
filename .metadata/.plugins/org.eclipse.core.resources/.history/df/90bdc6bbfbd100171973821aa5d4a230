@@ -1,0 +1,35 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_FIN_DESPESA")
+public class Despesa extends MovimentoFinanceiro implements Serializable {
+
+	private static final long serialVersionUID = 3694371023016931558L;
+	
+	public Despesa() {
+		super();
+		this.tipo = MovimentoFinanceiro.DESPESA;
+	}
+	
+	public Despesa(Long id, String descricao, Calendar dataCriacao) {
+		super(id, descricao, dataCriacao);
+		this.tipo = MovimentoFinanceiro.DESPESA;
+	}
+	
+	public Despesa(Long id, String descricao, Calendar dataCriacao, BigDecimal valor) {
+		super(id, descricao, dataCriacao, valor);
+		this.tipo = MovimentoFinanceiro.DESPESA;
+	}
+	
+	public Despesa(Long id, String descricao, Calendar dataCriacao, Double valor) {
+		super(id, descricao, dataCriacao, valor);
+		this.tipo = MovimentoFinanceiro.DESPESA;
+	}
+}

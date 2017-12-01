@@ -1,0 +1,60 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name="TB_FIN_RECEITA_ITEM")
+public class ReceitaItem implements Serializable {
+	
+	private static final long serialVersionUID = -3336268795443369100L;
+	
+	//CATEGORIA
+	public static final Character CAT_DINHEIRO = 'D';
+	public static final Character CAT_CARTAO_DEBITO = 'B';
+	public static final Character CAT_CARTAO_CREDITO = 'C';
+	public static final Character CAT_VALE_REFEICAO = 'R';
+	public static final Character CAT_VALE_ALIMENTACAO = 'A';
+	
+	//FATOR DE DESCONTO - VENDAS
+	public static final BigDecimal DESC_DINHEIRO = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+	public static final BigDecimal DESC_DEBITO = new BigDecimal(2.39).setScale(2, RoundingMode.HALF_EVEN);
+	public static final BigDecimal DESC_CREDITO = new BigDecimal(3.19).setScale(2, RoundingMode.HALF_EVEN);
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name="ID_RECEITA")
+	private Receita receita;
+	
+	@Column(name="DESCRICAO")
+	private String descricao;
+	
+	@Column(name="CATEGORIA", length=1)
+	private Character categoria;
+	
+	@Column(name="VALOR_TOTAL", precision=6, scale=2)
+	private BigDecimal valorTotal;
+	
+	@Column(name="VALOR_DESCONTO", precision=2, scale=2)
+	private BigDecimal valorDesconto;
+	
+	@Column(name="VALOR_LIQUIDO", precision=6, scale=2)
+	private BigDecimal valorLiquido;
+}

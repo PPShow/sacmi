@@ -1,20 +1,15 @@
 package br.com.mimilis.sacmi;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import br.com.mimilis.sacmi.domain.Despesa;
-import br.com.mimilis.sacmi.domain.LivroRazao;
-import br.com.mimilis.sacmi.domain.Receita;
-import br.com.mimilis.sacmi.repositories.DespesaRepository;
-import br.com.mimilis.sacmi.repositories.LivroRazaoRepository;
-import br.com.mimilis.sacmi.repositories.ReceitaRepository;
+import br.com.mimilis.sacmi.fin.domain.LivroRazao;
+import br.com.mimilis.sacmi.fin.repositories.LivroRazaoRepository;
+import br.com.mimilis.sacmi.fin.tools.ImportarExcel;
 
 @SpringBootApplication
 public class SacmiApplication implements CommandLineRunner{
@@ -26,48 +21,13 @@ public class SacmiApplication implements CommandLineRunner{
 	@Autowired
 	private LivroRazaoRepository lrDao;
 	
-	@Autowired
-	private DespesaRepository desDao;
-	
-	@Autowired
-	private ReceitaRepository recDao;
-
 	@Override
 	public void run(String... arg0) throws Exception {
 		
-		Calendar dataVigencia = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		
-		LivroRazao abr = new LivroRazao(null, 4, 2016);
-		dataVigencia.setTime(sdf.parse("01/04/2016"));
-		Receita recAbr = new Receita(null, "Fornecedores diversos", dataVigencia, 1400.00);
-		
-		LivroRazao mai = new LivroRazao(null, 5, 2016);
-		mai.setValorAnterior(abr.getValor());
-		dataVigencia.setTime(sdf.parse("11/05/2016"));
-		Despesa desMai1 = new Despesa(null, "Transfers para Chocolate", dataVigencia, 243.94);
-		dataVigencia.setTime(sdf.parse("16/05/2016"));
-		Despesa desMai2 = new Despesa(null, "Artgift", dataVigencia, 25.90);
-		Receita recMai1 = new Receita(null, "Moça do Salão Bom Retiro (caixa c/10bb)", dataVigencia, 17.60);
-		
-//		abr = lrDao.save(abr);
-//		mai = lrDao.save(mai);
-		
-		abr.getReceitas().add(recAbr);
-		
-		mai.getReceitas().add(recMai1);
-		mai.getDespesas().addAll(Arrays.asList(desMai1, desMai2));
-		
-		recAbr.setLivroRazao(abr);
-		
-		desMai1.setLivroRazao(mai);
-		desMai2.setLivroRazao(mai);
-		recMai1.setLivroRazao(mai);
-		
-		lrDao.save(Arrays.asList(abr, mai));
-		
-		recDao.save(Arrays.asList(recAbr, recMai1));
-		
-		desDao.save(Arrays.asList(desMai1, desMai2));
+		ImportarExcel imp = new ImportarExcel("C:\\Users\\Pedro\\Desktop\\Programação\\Spring Boot\\Contas Mi Milis.xlsx");
+		LivroRazao abr = imp.importarDataSet(4, 2016);
+		LivroRazao mai = imp.importarDataSet(5, 2016);
+		LivroRazao jun = imp.importarDataSet(6, 2016);
+		lrDao.save(Arrays.asList(abr,mai,jun) );
 	}
 }

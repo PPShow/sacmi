@@ -1,0 +1,21 @@
+package br.com.mimilis.sacmi.geral.domain;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_GER_ROTA")
+public class Rota {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@Column(name="DESCRICAO", nullable=false)
+	private String descricao;
+}

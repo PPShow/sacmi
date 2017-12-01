@@ -1,0 +1,14 @@
+package br.com.mimilis.sacmi.fin.exception;
+
+public class ExcelImportException extends RuntimeException {
+	
+	private static final long serialVersionUID = 377008370995345570L;
+
+	public ExcelImportException(String msg) {
+		super(msg);
+	}
+	
+	public ExcelImportException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
+}

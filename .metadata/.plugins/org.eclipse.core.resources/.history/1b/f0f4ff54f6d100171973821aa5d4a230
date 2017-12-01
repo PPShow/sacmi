@@ -1,0 +1,35 @@
+package br.com.mimilis.sacmi.geral.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_GER_ROTA")
+public class Rota implements Serializable {
+	
+	private static final long serialVersionUID = 127117186898155913L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@Column(name="DESCRICAO", nullable=false)
+	private String descricao;
+	
+	@Column(name="ENDERECO_INI")
+	private String enderecoIni;
+	
+	@Column(name="ENDERECO_FIM")
+	private String enderecoFim;
+	
+	@Column(name="TRAJETO_TOTAL", precision=5, scale=5)
+	private BigDecimal trajetoTotal;
+}

@@ -1,0 +1,41 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
+public abstract class MovimentoFinanceiroItem {
+	
+	//TIPO DE ITEM
+	public static final Character DESPESA = 'D';
+	public static final Character RECEITA = 'R';
+	
+	//CATEGORIA
+	public static final Character CAT_DINHEIRO = 'D';
+	public static final Character CAT_CARTAO_DEBITO = 'B';
+	public static final Character CAT_CARTAO_CREDITO = 'C';
+	
+	//FATOR DE DESCONTO - VENDAS
+	public static final BigDecimal DESC_DEBITO = new BigDecimal(2.39).setScale(2, RoundingMode.HALF_EVEN);
+	public static final BigDecimal DESC_CREDITO = new BigDecimal(3.19).setScale(2, RoundingMode.HALF_EVEN);
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	protected Long id;
+	
+	@Column(name="DESCRICAO")
+	protected String descricao;
+	
+	@Column(name="VALOR", precision=6, scale=2)
+	protected BigDecimal valor;
+	
+	@Column(name="CATEGORIA", length=1)
+	protected Character categoria;
+}

@@ -1,0 +1,10 @@
+package br.com.mimilis.sacmi.geral.domain;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="TB_GER_ROTA")
+public class Rota {
+
+}

@@ -1,0 +1,30 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
+public abstract class MovimentoFinanceiroItem {
+	
+	//TIPO DE ITEM
+	public static final Character DESPESA = 'D';
+	public static final Character RECEITA = 'R';
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@Column(name="DESCRICAO")
+	private String descricao;
+	
+	@Column(name="VALOR", scale=2)
+	private BigDecimal valor;
+	
+	@Column(name="CATEGORIA")
+}

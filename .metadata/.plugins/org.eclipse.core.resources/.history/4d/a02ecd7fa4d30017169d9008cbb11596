@@ -1,0 +1,24 @@
+package br.com.mimilis.sacmi.fin.tools;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.apache.poi.ss.usermodel.Workbook;
+
+public class ExcelTools {
+	
+	public static final Character INPUT_MODE_FILE = 'F';
+	
+	private String filePath;
+	private FileInputStream stream;
+	private File file;
+	
+	private Character inputMode;
+	
+	private Workbook workbook;
+	private String sheetName;
+	
+	public ExcelTools(String filePath) {
+		this.filePath = filePath;
+	}
+}

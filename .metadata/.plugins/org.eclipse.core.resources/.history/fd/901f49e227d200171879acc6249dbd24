@@ -1,0 +1,51 @@
+package br.com.mimilis.sacmi.fin.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name="TB_FIN_DESPESA_ITEM")
+public class DespesaItem implements Serializable{
+	
+	
+	public static final Character CAT_COMPRA = 'C';
+	public static final Character CAT_CONTA = 'T';
+	public static final Character CAT_PESSOAL = 'P';
+	public static final Character CAT_PAGAMENTO_SALARIO = 'S';
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="ID")
+	private Long id;
+	
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name="ID_DESPESA")
+	private Despesa despesa;
+	
+	@Column(name="DESCRICAO")
+	private String descricao;
+	
+	@Column(name="CATEGORIA")
+	private Character categoria;
+	
+	@Column(name="VALOR_PAGO")
+	private BigDecimal valorPago;
+	
+	@Column(name="VALOR_ADICIONAL_MULTA")
+	private BigDecimal valorMulta;
+	
+	@Column(name="VALOR_TOTAL")
+	private BigDecimal valorTotal;
+}

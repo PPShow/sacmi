@@ -1,0 +1,92 @@
+package br.com.mimilis.sacmi;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import br.com.mimilis.sacmi.fin.domain.Despesa;
+import br.com.mimilis.sacmi.fin.domain.DespesaItem;
+import br.com.mimilis.sacmi.fin.domain.LivroRazao;
+import br.com.mimilis.sacmi.fin.domain.Receita;
+import br.com.mimilis.sacmi.fin.domain.ReceitaItem;
+import br.com.mimilis.sacmi.fin.repositories.DespesaRepository;
+import br.com.mimilis.sacmi.fin.repositories.LivroRazaoRepository;
+import br.com.mimilis.sacmi.fin.repositories.ReceitaRepository;
+
+@SpringBootApplication
+public class SacmiApplication implements CommandLineRunner{
+
+	public static void main(String[] args) {
+		SpringApplication.run(SacmiApplication.class, args);
+	}
+	
+	@Autowired
+	private LivroRazaoRepository lrDao;
+	
+	@Autowired
+	private DespesaRepository desDao;
+	
+	@Autowired
+	private ReceitaRepository recDao;
+
+	@Override
+	public void run(String... arg0) throws Exception {
+		
+		Calendar dataMovimento = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//		
+//		LivroRazao abr = new LivroRazao(null, 4, 2016);
+//		dataVigencia.setTime(sdf.parse("01/04/2016"));
+//		Receita recAbr = new Receita(null, "Fornecedores diversos", dataVigencia, 1400.00);
+//		
+//		LivroRazao mai = new LivroRazao(null, 5, 2016);
+//		mai.setValorAnterior(abr.getValor());
+//		dataVigencia.setTime(sdf.parse("11/05/2016"));
+//		Despesa desMai1 = new Despesa(null, "Transfers para Chocolate", dataVigencia, 243.94);
+//		dataVigencia.setTime(sdf.parse("16/05/2016"));
+//		Despesa desMai2 = new Despesa(null, "Artgift", dataVigencia, 25.90);
+//		Receita recMai1 = new Receita(null, "Moça do Salão Bom Retiro (caixa c/10bb)", dataVigencia, 17.60);
+//		
+////		abr = lrDao.save(abr);
+////		mai = lrDao.save(mai);
+//		
+//		abr.getReceitas().add(recAbr);
+//		
+//		mai.getReceitas().add(recMai1);
+//		mai.getDespesas().addAll(Arrays.asList(desMai1, desMai2));
+//		
+//		recAbr.setLivroRazao(abr);
+//		
+//		desMai1.setLivroRazao(mai);
+//		desMai2.setLivroRazao(mai);
+//		recMai1.setLivroRazao(mai);
+//		
+//		lrDao.save(Arrays.asList(abr, mai));
+//		
+//		recDao.save(Arrays.asList(recAbr, recMai1));
+//		
+//		desDao.save(Arrays.asList(desMai1, desMai2));
+		
+		LivroRazao ago = new LivroRazao(null, 8, 2017);
+		
+		dataMovimento.setTime(sdf.parse("01/08/2017"));
+		Receita recAgo1 = new Receita(null, "Vendas na Rua ( Av.Ibirapuera, Av.DrGabr, Eucal)", dataMovimento);
+		recAgo1.getItens().add( new ReceitaItem(null, recAgo1, ReceitaItem.CAT_DINHEIRO, 127.65) );
+		recAgo1.getItens().add( new ReceitaItem(null, recAgo1, ReceitaItem.CAT_CARTAO_DEBITO, 33.0) );
+		
+		dataMovimento.setTime(sdf.parse("03/08/2017"));
+		Receita recAgo2 = new Receita(null, "Vendas na Rua ( Av.Jauaperi)", dataMovimento);
+		recAgo2.getItens().add( new ReceitaItem(null, recAgo2, ReceitaItem.CAT_DINHEIRO, 36.0) );
+		recAgo2.getItens().add( new ReceitaItem(null, recAgo2, ReceitaItem.CAT_CARTAO_DEBITO, 18.0) );
+		recAgo2.getItens().add( new ReceitaItem(null, recAgo2, ReceitaItem.CAT_CARTAO_CREDITO, 12.0) );
+		
+		dataMovimento.setTime(sdf.parse("15/08/2017"));
+		Despesa desAgo1 = new Despesa(null, "Cartão de crédito", dataMovimento);
+		desAgo1.getItens().add( new DespesaItem(null, desAgo1, DespesaItem.CAT_CONTA, 234.0) );
+	}
+}
