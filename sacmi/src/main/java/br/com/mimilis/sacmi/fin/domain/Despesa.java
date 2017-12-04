@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import br.com.mimilis.sacmi.fin.ref.TipoFinanceiro;
+
 @Entity
 @Table(name="TB_FIN_DESPESA")
 public class Despesa extends MovimentoFinanceiro implements Serializable {
@@ -27,22 +29,22 @@ public class Despesa extends MovimentoFinanceiro implements Serializable {
 	//--- CONSTRUTORES
 	public Despesa() {
 		super();
-		this.tipo = MovimentoFinanceiro.DESPESA;
+		this.tipo = TipoFinanceiro.DESPESA;
 	}
 	
 	public Despesa(Long id, String descricao, Calendar dataCriacao) {
 		super(id, descricao, dataCriacao);
-		this.tipo = MovimentoFinanceiro.DESPESA;
+		this.tipo = TipoFinanceiro.DESPESA;
 	}
 	
 	public Despesa(Long id, String descricao, Calendar dataCriacao, BigDecimal valor) {
 		super(id, descricao, dataCriacao, valor);
-		this.tipo = MovimentoFinanceiro.DESPESA;
+		this.tipo = TipoFinanceiro.DESPESA;
 	}
 	
 	public Despesa(Long id, String descricao, Calendar dataCriacao, Double valor) {
 		super(id, descricao, dataCriacao, valor);
-		this.tipo = MovimentoFinanceiro.DESPESA;
+		this.tipo = TipoFinanceiro.DESPESA;
 	}
 
 	//--- GETTERS & SETTERS

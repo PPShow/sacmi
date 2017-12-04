@@ -18,6 +18,8 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.com.mimilis.sacmi.fin.ref.TipoItemFinanceiro;
+
 @Entity
 @Table(name="TB_FIN_DESPESA_ITEM")
 public class DespesaItem implements Serializable{
@@ -72,11 +74,11 @@ public class DespesaItem implements Serializable{
 	//--- CONSTRUTORES
 	public DespesaItem() { }
 
-	public DespesaItem(Long id, Despesa despesa, Character categoria, BigDecimal valorPago) {
+	public DespesaItem(Long id, Despesa despesa, TipoItemFinanceiro categoria, BigDecimal valorPago) {
 		super();
 		this.id = id;
 		this.despesa = despesa;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.valorPago = valorPago;
 		
 		if(despesa != null) {
@@ -85,11 +87,11 @@ public class DespesaItem implements Serializable{
 		}
 	}
 	
-	public DespesaItem(Long id, Despesa despesa, Character categoria, Double valorPago) {
+	public DespesaItem(Long id, Despesa despesa, TipoItemFinanceiro categoria, Double valorPago) {
 		super();
 		this.id = id;
 		this.despesa = despesa;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.valorPago = valorPago != null ? new BigDecimal(valorPago).setScale(2, RoundingMode.HALF_EVEN) : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
 		
 		if(despesa != null) {
@@ -98,24 +100,24 @@ public class DespesaItem implements Serializable{
 		}
 	}
 
-	public DespesaItem(Long id, Despesa despesa, String descricao, Character categoria, Calendar dataPagamento,
+	public DespesaItem(Long id, Despesa despesa, String descricao, TipoItemFinanceiro categoria, Calendar dataPagamento,
 			BigDecimal valorPago) {
 		super();
 		this.id = id;
 		this.despesa = despesa;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.dataPagamento = dataPagamento;
 		this.valorPago = valorPago;
 	}
 
-	public DespesaItem(Long id, Despesa despesa, String descricao, Character categoria, Calendar dataPrevistaPagamento,
+	public DespesaItem(Long id, Despesa despesa, String descricao, TipoItemFinanceiro categoria, Calendar dataPrevistaPagamento,
 			Calendar dataPagamento, BigDecimal valorPago, BigDecimal valorJuros, BigDecimal valorTotal) {
 		super();
 		this.id = id;
 		this.despesa = despesa;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.dataPrevistaPagamento = dataPrevistaPagamento;
 		this.dataPagamento = dataPagamento;
 		this.valorPago = valorPago;
@@ -148,12 +150,15 @@ public class DespesaItem implements Serializable{
 		this.descricao = descricao;
 	}
 
-	public Character getCategoria() {
-		return categoria;
+	public TipoItemFinanceiro getCategoria() {
+		return TipoItemFinanceiro.recuperarDespesa(categoria);
 	}
 
-	public void setCategoria(Character categoria) {
-		this.categoria = categoria;
+	public void setCategoria(TipoItemFinanceiro categoria) {
+		if(categoria == null) {
+			this.categoria = null;
+		}
+		this.categoria = categoria.valor();
 	}
 
 	public Calendar getDataPrevistaPagamento() {

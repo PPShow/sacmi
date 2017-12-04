@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.com.mimilis.sacmi.fin.ref.TipoFinanceiro;
+
 @MappedSuperclass
 public abstract class MovimentoFinanceiro {
 	
@@ -54,7 +56,7 @@ public abstract class MovimentoFinanceiro {
 	protected LivroRazao livroRazao;
 	
 	@Transient
-	protected Character tipo;
+	protected TipoFinanceiro tipo;
 	
 	//--- CONSTRUCTORS
 	public MovimentoFinanceiro() {
@@ -171,11 +173,11 @@ public abstract class MovimentoFinanceiro {
 		this.valor = valor;
 	}
 
-	public Character getTipo() {
+	public TipoFinanceiro getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Character tipo) {
+	public void setTipo(TipoFinanceiro tipo) {
 		this.tipo = tipo;
 	}
 

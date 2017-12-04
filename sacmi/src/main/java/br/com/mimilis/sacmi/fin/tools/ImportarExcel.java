@@ -2,9 +2,11 @@ package br.com.mimilis.sacmi.fin.tools;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,6 +22,7 @@ import br.com.mimilis.sacmi.fin.domain.MovimentoFinanceiro;
 import br.com.mimilis.sacmi.fin.domain.Receita;
 import br.com.mimilis.sacmi.fin.domain.ReceitaItem;
 import br.com.mimilis.sacmi.fin.exception.ExcelToolsException;
+import br.com.mimilis.sacmi.fin.ref.TipoItemFinanceiro;
 import br.com.mimilis.sacmi.geral.ref.MesRef;
 
 public class ImportarExcel implements Serializable{
@@ -42,14 +45,59 @@ public class ImportarExcel implements Serializable{
 		this.filePath = filePath;
 	}
 	
-	public LivroRazao importarDataSet(Integer mes, Integer ano) throws Exception {
+	public List<LivroRazao> importarDataSet(Integer anoIni, Integer mesIni, Integer anoFim, Integer mesFim) throws Exception {
+		ExcelReaderTools ert = new ExcelReaderTools(filePath);
+		ert.openWorkbook();
+		
+		Exception failed=null;
+		
+		List<LivroRazao> livros = new ArrayList<LivroRazao>();
+		
+		if(!validateNonNegativeValues(anoIni, mesIni, anoFim, mesFim)) {
+			throw new ExcelToolsException("Um dos parâmetros passados é negativo ou nulo: "+anoIni+"-"+mesIni+", "+anoFim+"-"+mesFim);
+		}
+		
+		if(mesFim.intValue() == 12) {
+			mesFim = 1;
+			anoFim ++;
+		}
+		else {
+			mesFim++;
+		}
+		
+		try {
+			
+			for(Integer mes=mesIni, ano=anoIni; mes==mesFim && ano==anoFim;) {
+				
+				livros.add(importarDataSet(mes, ano, ert));
+				
+				if(mes.intValue() == 12) {
+					mes = 1;
+					ano ++;
+				}
+				else {
+					mes++;
+				}
+			}
+			
+		} catch (Exception ex) {
+			failed = ex;
+		} 
+		
+		ert.closeWorkbook();
+		
+		if(failed != null) {
+			throw failed;
+		}
+		
+		return livros;
+	}
+	
+	protected LivroRazao importarDataSet(Integer mes, Integer ano, ExcelReaderTools ert) throws Exception {
 		
 		if(mes == null || ano == null) {
 			throw new ExcelToolsException(mes == null ? ERR_MES_VAZIO : ERR_ANO_VAZIO);
 		}
-		
-		ExcelReaderTools ert = new ExcelReaderTools(filePath);
-		ert.openWorkbook();
 		
 		Sheet chosen = null;
 		MesRef mr = MesRef.matchValue(mes, false);
@@ -74,7 +122,6 @@ public class ImportarExcel implements Serializable{
 			return importDataSet_NovaPlanilha(chosen, mes, ano);
 		}
 		
-		ert.closeWorkbook();
 		throw new ExcelToolsException(ERR_OPERACAO_NAO_REALIZADA);
 		//return null;
 	}
@@ -229,15 +276,15 @@ public class ImportarExcel implements Serializable{
 						rec = new Receita(null, descricao, data);
 					}
 					if(recDin != null && recDin > 0.0) {
-						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_DINHEIRO, recDin) );
+						rec.getItens().add( new ReceitaItem(null, rec, TipoItemFinanceiro.REC_DINHEIRO, recDin) );
 						rec.addValor(recDin);
 					}
 					if(recDeb != null && recDeb > 0.0) {
-						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_CARTAO_DEBITO, recDeb) );
+						rec.getItens().add( new ReceitaItem(null, rec, TipoItemFinanceiro.REC_CARTAO_DEBITO, recDeb) );
 						rec.addValor(recDeb);
 					}
 					if(recCre != null && recCre > 0.0) {
-						rec.getItens().add( new ReceitaItem(null, rec, ReceitaItem.CAT_CARTAO_CREDITO, recCre) );
+						rec.getItens().add( new ReceitaItem(null, rec, TipoItemFinanceiro.REC_CARTAO_CREDITO, recCre) );
 						rec.addValor(recCre);
 					}
 					mapReceita.put(data, rec);
@@ -249,7 +296,7 @@ public class ImportarExcel implements Serializable{
 					if(des == null) {
 						des = new Despesa(null,descricao,data);
 					}
-					des.getItens().add(new DespesaItem(null, des, DespesaItem.CAT_GERAL, desp));
+					des.getItens().add(new DespesaItem(null, des, TipoItemFinanceiro.DESP_GERAL, desp));
 					des.addValor(desp);
 					mapDespesa.put(data, des);
 				}
@@ -310,7 +357,7 @@ public class ImportarExcel implements Serializable{
 	private boolean validateNonNegativeValues(Integer...values) {
 		if(values != null && values.length > 0) {
 			for(Integer value : values) {
-				if(value < 0) {
+				if(value == null || value < 0) {
 					return false;
 				}
 			}

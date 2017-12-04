@@ -18,6 +18,8 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.com.mimilis.sacmi.fin.ref.TipoItemFinanceiro;
+
 @Entity
 @Table(name="TB_FIN_RECEITA_ITEM")
 public class ReceitaItem implements Serializable {
@@ -25,11 +27,11 @@ public class ReceitaItem implements Serializable {
 	private static final long serialVersionUID = -3336268795443369100L;
 	
 	//CATEGORIA
-	public static final Character CAT_DINHEIRO = 'D';
-	public static final Character CAT_CARTAO_DEBITO = 'B';
-	public static final Character CAT_CARTAO_CREDITO = 'C';
-	public static final Character CAT_VALE_REFEICAO = 'R';
-	public static final Character CAT_VALE_ALIMENTACAO = 'A';
+//	public static final Character CAT_DINHEIRO = 'D';
+//	public static final Character CAT_CARTAO_DEBITO = 'B';
+//	public static final Character CAT_CARTAO_CREDITO = 'C';
+//	public static final Character CAT_VALE_REFEICAO = 'R';
+//	public static final Character CAT_VALE_ALIMENTACAO = 'A';
 	
 	//FATOR DE DESCONTO - VENDAS
 	public static final BigDecimal DESC_DINHEIRO = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
@@ -84,11 +86,11 @@ public class ReceitaItem implements Serializable {
 	//--- CONSTRUTORES
 	public ReceitaItem() { }
 
-	public ReceitaItem(Long id, Receita receita, Character categoria, BigDecimal valorRecebido) {
+	public ReceitaItem(Long id, Receita receita, TipoItemFinanceiro categoria, BigDecimal valorRecebido) {
 		super();
 		this.id = id;
 		this.receita = receita;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.valorRecebido = valorRecebido;
 		
 		if(receita != null) {
@@ -97,11 +99,11 @@ public class ReceitaItem implements Serializable {
 		}
 	}
 	
-	public ReceitaItem(Long id, Receita receita, Character categoria, Double valorRecebido) {
+	public ReceitaItem(Long id, Receita receita, TipoItemFinanceiro categoria, Double valorRecebido) {
 		super();
 		this.id = id;
 		this.receita = receita;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.valorRecebido = valorRecebido != null ? new BigDecimal(valorRecebido).setScale(2, RoundingMode.HALF_EVEN) : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
 		
 		if(receita != null) {
@@ -110,12 +112,12 @@ public class ReceitaItem implements Serializable {
 		}
 	}
 
-	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, BigDecimal valorRecebido) {
+	public ReceitaItem(Long id, Receita receita, String descricao, TipoItemFinanceiro categoria, BigDecimal valorRecebido) {
 		super();
 		this.id = id;
 		this.receita = receita;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.valorRecebido = valorRecebido;
 		
 		if(receita != null) {
@@ -124,25 +126,25 @@ public class ReceitaItem implements Serializable {
 		}
 	}
 
-	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+	public ReceitaItem(Long id, Receita receita, String descricao, TipoItemFinanceiro categoria, Calendar dataPrevistaEntrada,
 			Calendar dataEntrada, BigDecimal valorRecebido) {
 		super();
 		this.id = id;
 		this.receita = receita;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.dataPrevistaEntrada = dataPrevistaEntrada;
 		this.dataEntrada = dataEntrada;
 		this.valorRecebido = valorRecebido;
 	}
 
-	public ReceitaItem(Long id, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+	public ReceitaItem(Long id, String descricao, TipoItemFinanceiro categoria, Calendar dataPrevistaEntrada,
 			Calendar dataEntrada, BigDecimal valorRecebido, BigDecimal valorDesconto, BigDecimal valorLiquido,
 			Boolean flagPendente, String observacoes) {
 		super();
 		this.id = id;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.dataPrevistaEntrada = dataPrevistaEntrada;
 		this.dataEntrada = dataEntrada;
 		this.valorRecebido = valorRecebido;
@@ -152,14 +154,14 @@ public class ReceitaItem implements Serializable {
 		this.observacoes = observacoes;
 	}
 
-	public ReceitaItem(Long id, Receita receita, String descricao, Character categoria, Calendar dataPrevistaEntrada,
+	public ReceitaItem(Long id, Receita receita, String descricao, TipoItemFinanceiro categoria, Calendar dataPrevistaEntrada,
 			Calendar dataEntrada, BigDecimal valorRecebido, BigDecimal valorDesconto, BigDecimal valorLiquido,
 			Boolean flagPendente, String observacoes) {
 		super();
 		this.id = id;
 		this.receita = receita;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.categoria = categoria.valor();
 		this.dataPrevistaEntrada = dataPrevistaEntrada;
 		this.dataEntrada = dataEntrada;
 		this.valorRecebido = valorRecebido;
@@ -220,12 +222,15 @@ public class ReceitaItem implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Character getCategoria() {
-		return categoria;
+	public TipoItemFinanceiro getCategoria() {
+		return TipoItemFinanceiro.recuperarReceita(categoria);
 	}
 
-	public void setCategoria(Character categoria) {
-		this.categoria = categoria;
+	public void setCategoria(TipoItemFinanceiro categoria) {
+		if(categoria == null) {
+			this.categoria = null;
+		}
+		this.categoria = categoria.valor();
 	}
 
 	public Calendar getDataPrevistaEntrada() {

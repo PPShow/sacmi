@@ -1,6 +1,6 @@
 package br.com.mimilis.sacmi;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -25,9 +25,12 @@ public class SacmiApplication implements CommandLineRunner{
 	public void run(String... arg0) throws Exception {
 		
 		ImportarExcel imp = new ImportarExcel("C:\\Users\\Pedro\\Desktop\\Programação\\Spring Boot\\Contas Mi Milis.xlsx");
-		LivroRazao abr = imp.importarDataSet(4, 2016);
-		LivroRazao mai = imp.importarDataSet(5, 2016);
-		LivroRazao jun = imp.importarDataSet(6, 2016);
-		lrDao.save(Arrays.asList(abr,mai,jun) );
+//		LivroRazao abr = imp.importarDataSet(4, 2016);
+//		LivroRazao mai = imp.importarDataSet(5, 2016);
+//		LivroRazao jun = imp.importarDataSet(6, 2016);
+//		lrDao.save(Arrays.asList(abr,mai,jun) );
+		
+		List<LivroRazao> lrs = imp.importarDataSet(2016, 4, 2016, 6);
+		lrDao.save(lrs);
 	}
 }

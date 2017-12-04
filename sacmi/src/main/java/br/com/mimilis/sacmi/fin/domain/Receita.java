@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import br.com.mimilis.sacmi.fin.ref.TipoFinanceiro;
 import br.com.mimilis.sacmi.geral.domain.Rota;
 
 @Entity
@@ -35,22 +36,22 @@ public class Receita extends MovimentoFinanceiro implements Serializable {
 	//--- CONSTRUTORES
 	public Receita() {
 		super();
-		this.tipo = MovimentoFinanceiro.RECEITA;
+		this.tipo = TipoFinanceiro.RECEITA;
 	}
 	
 	public Receita (Long id, String descricao, Calendar dataCriacao) {
 		super(id, descricao, dataCriacao);
-		this.tipo = MovimentoFinanceiro.RECEITA;
+		this.tipo = TipoFinanceiro.RECEITA;
 	}
 	
 	public Receita (Long id, String descricao, Calendar dataCriacao, BigDecimal valor) {
 		super(id, descricao, dataCriacao, valor);
-		this.tipo = MovimentoFinanceiro.RECEITA;
+		this.tipo = TipoFinanceiro.RECEITA;
 	}
 	
 	public Receita (Long id, String descricao, Calendar dataCriacao, Double valor) {
 		super(id, descricao, dataCriacao, valor);
-		this.tipo = MovimentoFinanceiro.RECEITA;
+		this.tipo = TipoFinanceiro.RECEITA;
 	}
 	
 	//--- GETTERS & SETTERS
