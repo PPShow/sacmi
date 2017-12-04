@@ -46,7 +46,7 @@ public class ImportarExcel implements Serializable{
 	}
 	
 	public List<LivroRazao> importarDataSet(Integer anoIni, Integer mesIni, Integer anoFim, Integer mesFim) throws Exception {
-		ExcelReaderTools ert = new ExcelReaderTools(filePath);
+		ExcelReaderTools ert = new ExcelReaderTools(filePath, ExcelReaderTools.INPUT_MODE_INPUT_STREAM);
 		ert.openWorkbook();
 		
 		Exception failed=null;
@@ -67,7 +67,7 @@ public class ImportarExcel implements Serializable{
 		
 		try {
 			
-			for(Integer mes=mesIni, ano=anoIni; mes==mesFim && ano==anoFim;) {
+			for(Integer mes=mesIni, ano=anoIni; mes<mesFim && ano<=anoFim;) {
 				
 				livros.add(importarDataSet(mes, ano, ert));
 				
