@@ -67,7 +67,7 @@ public class ImportarExcel implements Serializable{
 		
 		try {
 			
-			for(Integer mes=mesIni, ano=anoIni; mes<mesFim && ano<=anoFim;) {
+			for(Integer mes=mesIni, ano=anoIni; (mes<mesFim && ano.intValue()==anoFim.intValue()) || ano < anoFim;) {
 				
 				livros.add(importarDataSet(mes, ano, ert));
 				
@@ -249,7 +249,12 @@ public class ImportarExcel implements Serializable{
 					}
 					//RECEITA DINHEIRO/DEBITO
 					else if(colInd == headRecDinheiro) {
-						recDin = cell.getNumericCellValue();
+						if(CellType.STRING.equals(cell.getCellTypeEnum()) ) {
+							recDin = new Double(cell.getStringCellValue().replaceAll("\\.", "").replaceAll(",", "."));
+						}
+						else {
+							recDin = cell.getNumericCellValue();
+						}
 					}
 					//RECEITA DEBITO
 					else if(colInd == headRecDebito) {

@@ -30,7 +30,7 @@ public class SacmiApplication implements CommandLineRunner{
 //		LivroRazao jun = imp.importarDataSet(6, 2016);
 //		lrDao.save(Arrays.asList(abr,mai,jun) );
 		
-		List<LivroRazao> lrs = imp.importarDataSet(2016, 4, 2016, 6);
+		List<LivroRazao> lrs = imp.importarDataSet(2016, 4, 2017, 11);
 		lrDao.save(lrs);
 	}
 }
